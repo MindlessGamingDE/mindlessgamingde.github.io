@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GIF Suchmaschine</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+    }
+    #search-container {
+        text-align: center;
+        margin-top: 20px;
+    }
+    #search-term {
+        padding: 10px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 300px;
+    }
+    #search-button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    #gif-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    .gif-item {
+        width: 200px;
+        margin: 10px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s;
+    }
+    .gif-item:hover {
+        transform: scale(1.15);
+    }
+    img {
+        width: 100%;
+        height: auto;
+    }
+</style>
+</head>
+<body>
+<div id="search-container">
+    <input type="text" id="search-term" placeholder="Suche nach GIFs">
+    <button id="search-button" onclick="searchGifs()">Suche</button>
+</div>
+
+<div id="gif-container"></div>
+
+<script>
+function searchGifs() {
+    var searchTerm = document.getElementById("search-term").value;
+    var apiKey = "JVdsELWUq1PJZjlHPM54ddlTmpEzajkz"; // Hier sollte dein eigener API-Schlüssel stehen
+    var limit = 100; // Anzahl der anzuzeigenden GIFs
+
+    fetch(`https://api.giphy.com/v1/gifs/search?q=${searchTerm}&api_key=${apiKey}&limit=${limit}`)
+    .then(response => response.json())
+    .then(data => {
+        var gifs = data.data;
+        var gifContainer = document.getElementById("gif-container");
+        gifContainer.innerHTML = "";
+
+        gifs.forEach(gif => {
+            var gifUrl = gif.images.fixed_height.url;
+            var gifTitle = gif.title;
+
+            var gifItem = document.createElement("div");
+            gifItem.classList.add("gif-item");
+
+            var img = document.createElement("img");
+            img.src = gifUrl;
+            img.alt = gifTitle;
+
+            gifItem.appendChild(img);
+            gifContainer.appendChild(gifItem);
+        });
+    })
+    .catch(error => console.error('Fehler beim Laden der GIFs:', error));
+}
+</script>
+</body>
+</html>
